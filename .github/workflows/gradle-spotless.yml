@@ -12,8 +12,7 @@ on:
     branches: "**"
 
 permissions:
-  contents: write
-  pages: write
+  contents: read
 
 jobs:
   spotless-check:
