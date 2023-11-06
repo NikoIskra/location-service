@@ -1,0 +1,55 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Spring boot template",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/v1/healthcheck": {
+      "get": {
+        "tags": [
+          "healthcheck"
+        ],
+        "description": "Healthcheck endpoint",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/{service-name}": {
+      "post": {
+        "tags": [
+          "{service-name}"
+        ],
+        "description": "Creates new {service-name} and stores it into database",
+        "requestBody": {
+          "description": "{service-name} to be added",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "contentSchema/requestModel.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "responses/201{service-name}Created.json"
+          },
+          "400": {
+            "$ref": "responses/400{service-name}BadRequest.json"
+          },
+          "409": {
+            "$ref": "responses/409{service-name}Conflict.json"
+          },
+          "default": {
+            "$ref": "responses/default.json"
+          }
+        }
+      }
+    }
+  }
+}
