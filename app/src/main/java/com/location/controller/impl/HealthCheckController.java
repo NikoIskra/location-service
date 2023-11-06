@@ -1,9 +1,8 @@
 package com.location.controller.impl;
 
+import com.location.controller.HealthcheckApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.location.controller.HealthcheckApi;
 
 @RestController
 public class HealthCheckController implements HealthcheckApi {

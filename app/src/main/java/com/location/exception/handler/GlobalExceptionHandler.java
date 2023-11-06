@@ -1,5 +1,8 @@
 package com.location.exception.handler;
 
+import com.location.exception.BadRequestException;
+import com.location.exception.ConflictException;
+import com.location.model.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -9,10 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import com.location.exception.BadRequestException;
-import com.location.exception.ConflictException;
-import com.location.model.ErrorResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {

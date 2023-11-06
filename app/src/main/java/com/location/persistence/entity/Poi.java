@@ -1,10 +1,5 @@
 package com.location.persistence.entity;
 
-
-import java.sql.Timestamp;
-
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,138 +7,136 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.sql.Timestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "poi")
 public class Poi {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "poiSequenceGenerator")
-    @SequenceGenerator(
-        name = "poiSequenceGenerator",
-        sequenceName = "poi_id_seq",
-        allocationSize = 1)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "poiSequenceGenerator")
+  @SequenceGenerator(name = "poiSequenceGenerator", sequenceName = "poi_id_seq", allocationSize = 1)
+  private Long id;
 
-    @Column(name = "eternal_id")
-    private String externalID;
+  @Column(name = "eternal_id")
+  private String externalID;
 
-    private String name;
+  private String name;
 
-    private String type;
+  private String type;
 
-    private String description;
+  private String description;
 
-    private Float lat;
+  private Float lat;
 
-    @Column(name = "long")
-    private Float longFloat;
+  @Column(name = "long")
+  private Float longFloat;
 
-    private String status;
+  private String status;
 
-    @Column(name = "created_at", insertable = false)
-    private Timestamp createdAt;
+  @Column(name = "created_at", insertable = false)
+  private Timestamp createdAt;
 
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    private Timestamp updatedAt;
+  @Column(name = "updated_at")
+  @UpdateTimestamp
+  private Timestamp updatedAt;
 
-    public Poi() {
-    }
+  public Poi() {}
 
-    
+  public Poi(
+      Long id,
+      String externalID,
+      String name,
+      String type,
+      Float lat,
+      Float longFloat,
+      String status) {
+    this.id = id;
+    this.externalID = externalID;
+    this.name = name;
+    this.type = type;
+    this.lat = lat;
+    this.longFloat = longFloat;
+    this.status = status;
+  }
 
-    public Poi(Long id, String externalID, String name, String type, Float lat, Float longFloat, String status) {
-        this.id = id;
-        this.externalID = externalID;
-        this.name = name;
-        this.type = type;
-        this.lat = lat;
-        this.longFloat = longFloat;
-        this.status = status;
-    }
+  public Long getId() {
+    return id;
+  }
 
+  public void setId(Long id) {
+    this.id = id;
+  }
 
+  public String getExternalID() {
+    return externalID;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public void setExternalID(String externalID) {
+    this.externalID = externalID;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getExternalID() {
-        return externalID;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setExternalID(String externalID) {
-        this.externalID = externalID;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public Float getLat() {
+    return lat;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setLat(Float lat) {
+    this.lat = lat;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public Float getLongFloat() {
+    return longFloat;
+  }
 
-    public Float getLat() {
-        return lat;
-    }
+  public void setLongFloat(Float longFloat) {
+    this.longFloat = longFloat;
+  }
 
-    public void setLat(Float lat) {
-        this.lat = lat;
-    }
+  public String getStatus() {
+    return status;
+  }
 
-    public Float getLongFloat() {
-        return longFloat;
-    }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-    public void setLongFloat(Float longFloat) {
-        this.longFloat = longFloat;
-    }
+  public Timestamp getCreatedAt() {
+    return createdAt;
+  }
 
-    public String getStatus() {
-        return status;
-    }
+  public void setCreatedAt(Timestamp createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+  public Timestamp getUpdatedAt() {
+    return updatedAt;
+  }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    
-    
+  public void setUpdatedAt(Timestamp updatedAt) {
+    this.updatedAt = updatedAt;
+  }
 }
