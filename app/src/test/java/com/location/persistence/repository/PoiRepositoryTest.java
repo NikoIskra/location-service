@@ -2,6 +2,8 @@ package com.location.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.location.model.StatusEnum;
+import com.location.model.TypeEnum;
 import com.location.persistence.entity.Poi;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,15 @@ public class PoiRepositoryTest {
   @Autowired PoiRepository poiRepository;
 
   private static Poi createPoi() {
-    Poi poi = new Poi(1L, "external", "name", "type", Float.valueOf(1), Float.valueOf(1), "status");
+    Poi poi =
+        new Poi(
+            1L,
+            "external",
+            "name",
+            TypeEnum.TOOLS,
+            Float.valueOf(1),
+            Float.valueOf(1),
+            StatusEnum.VISIBLE);
     return poi;
   }
 
@@ -45,8 +55,8 @@ public class PoiRepositoryTest {
     assertEquals(poi.getExternalID(), poiFromDB.getExternalID());
     assertEquals(poi.getName(), poiFromDB.getName());
     assertEquals(poi.getType(), poiFromDB.getType());
-    assertEquals(poi.getLat(), poiFromDB.getLat());
-    assertEquals(poi.getLongFloat(), poiFromDB.getLongFloat());
+    assertEquals(poi.getLatitude(), poiFromDB.getLatitude());
+    assertEquals(poi.getLongitude(), poiFromDB.getLongitude());
     assertEquals(poi.getStatus(), poiFromDB.getStatus());
   }
 }

@@ -1,13 +1,18 @@
 package com.location.persistence.entity;
 
+import com.location.model.StatusEnum;
+import com.location.model.TypeEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.util.List;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
@@ -18,21 +23,23 @@ public class Poi {
   @SequenceGenerator(name = "poiSequenceGenerator", sequenceName = "poi_id_seq", allocationSize = 1)
   private Long id;
 
-  @Column(name = "eternal_id")
+  @Column(name = "external_id")
   private String externalID;
 
   private String name;
 
-  private String type;
+  private TypeEnum type;
+
+  @OneToMany(mappedBy = "poi", cascade = CascadeType.PERSIST)
+  private List<Tag> tags;
 
   private String description;
 
-  private Float lat;
+  private Float latitude;
 
-  @Column(name = "long")
-  private Float longFloat;
+  private Float longitude;
 
-  private String status;
+  private StatusEnum status;
 
   @Column(name = "created_at", insertable = false)
   private Timestamp createdAt;
@@ -47,17 +54,42 @@ public class Poi {
       Long id,
       String externalID,
       String name,
-      String type,
-      Float lat,
-      Float longFloat,
-      String status) {
+      TypeEnum type,
+      Float latitude,
+      Float longitude,
+      StatusEnum status) {
     this.id = id;
     this.externalID = externalID;
     this.name = name;
     this.type = type;
-    this.lat = lat;
-    this.longFloat = longFloat;
+    this.latitude = latitude;
+    this.longitude = longitude;
     this.status = status;
+  }
+
+  public Poi(
+      Long id,
+      String externalID,
+      String name,
+      TypeEnum type,
+      List<Tag> tags,
+      String description,
+      Float latitude,
+      Float longitude,
+      StatusEnum status,
+      Timestamp createdAt,
+      Timestamp updatedAt) {
+    this.id = id;
+    this.externalID = externalID;
+    this.name = name;
+    this.type = type;
+    this.tags = tags;
+    this.description = description;
+    this.latitude = latitude;
+    this.longitude = longitude;
+    this.status = status;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   public Long getId() {
@@ -84,14 +116,6 @@ public class Poi {
     this.name = name;
   }
 
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
   public String getDescription() {
     return description;
   }
@@ -100,27 +124,19 @@ public class Poi {
     this.description = description;
   }
 
-  public Float getLat() {
-    return lat;
+  public TypeEnum getType() {
+    return type;
   }
 
-  public void setLat(Float lat) {
-    this.lat = lat;
+  public void setType(TypeEnum type) {
+    this.type = type;
   }
 
-  public Float getLongFloat() {
-    return longFloat;
-  }
-
-  public void setLongFloat(Float longFloat) {
-    this.longFloat = longFloat;
-  }
-
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 
@@ -138,5 +154,29 @@ public class Poi {
 
   public void setUpdatedAt(Timestamp updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  public List<Tag> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<Tag> tags) {
+    this.tags = tags;
+  }
+
+  public Float getLatitude() {
+    return latitude;
+  }
+
+  public void setLatitude(Float latitude) {
+    this.latitude = latitude;
+  }
+
+  public Float getLongitude() {
+    return longitude;
+  }
+
+  public void setLongitude(Float longitude) {
+    this.longitude = longitude;
   }
 }

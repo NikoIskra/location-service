@@ -68,15 +68,15 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'practicetask.App'
+    mainClass = 'location.App'
 }
 
 openApiGenerate {
     generatorName.set("spring")
     inputSpec.set("$rootDir/OpenAPI/openApi.json")
     outputDir.set("$rootDir/app/")
-    apiPackage.set("com.provider.controller")
-    modelPackage.set("com.provider.model")
+    apiPackage.set("com.location.controller")
+    modelPackage.set("com.location.model")
     configOptions = [
             useSpringBoot3         : "true",
             useTags                : "true",

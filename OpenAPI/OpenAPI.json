@@ -18,35 +18,30 @@
         }
       }
     },
-    "/api/v1/{service-name}": {
-      "post": {
-        "tags": [
-          "{service-name}"
+    "/api/v1/poi" : {
+      "post" : {
+        "operationId": "addPoi",
+        "tags" : [
+          "poi"
         ],
-        "description": "Creates new {service-name} and stores it into database",
-        "requestBody": {
-          "description": "{service-name} to be added",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "contentSchema/requestModel.json"
-              }
-            }
+        "description": "Insert poi",
+        "parameters": [
+          {
+            "$ref" : "common/params/headers/accountIDParam.json"
           }
+        ],
+        "requestBody" : {
+          "$ref" : "APIspecs/requests/poiPostRequestBody.json"
         },
         "responses": {
-          "201": {
-            "$ref": "responses/201{service-name}Created.json"
+          "201" : {
+            "$ref" : "APIspecs/responses/poiCreated.json"
           },
           "400": {
-            "$ref": "responses/400{service-name}BadRequest.json"
+            "$ref": "APIspecs/responses/badRequest.json"
           },
           "409": {
-            "$ref": "responses/409{service-name}Conflict.json"
-          },
-          "default": {
-            "$ref": "responses/default.json"
+            "$ref": "APIspecs/responses/conflict.json"
           }
         }
       }

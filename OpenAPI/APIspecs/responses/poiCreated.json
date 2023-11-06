@@ -10,7 +10,10 @@
     "content": {
         "application/json": {
             "schema": {
-                "$ref": "../contentSchema/returnModel.json"
+                "$ref": "schema/poiPostReturnModel.json"
+            },
+            "example" : {
+                "$ref" : "example/poiPostReturnModelExample.json"
             }
         }
     }

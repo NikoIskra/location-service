@@ -1,0 +1,11 @@
+{
+    "externalId" : 1,
+    "name" : "name",
+    "type" : "tools",
+    "tags" : [
+        "gift", "repair"
+    ],
+    "description" : "description",
+    "lat" : 1.4,
+    "long" : 1.5
+}

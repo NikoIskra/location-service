@@ -1,0 +1,14 @@
+{
+    "description": "Poi to be added",
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "schema/poiPostRequestModel.json"
+        },
+        "example" : {
+          "$ref" : "example/poiPostRequestBodyExample.json"
+        }
+      }
+    }
+}

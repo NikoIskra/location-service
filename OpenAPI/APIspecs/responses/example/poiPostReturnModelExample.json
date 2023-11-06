@@ -1,0 +1,16 @@
+{
+    "ok" : true,
+    "result" : {
+        "id" : 1,
+        "externalId" : 2,
+        "name" : "name",
+        "type" : "tools",
+        "tags" : [
+            "repair"
+        ],
+        "description" : "description",
+        "lat" : 1.4,
+        "long" : 1.5,
+        "status" : "visible"
+    }
+}

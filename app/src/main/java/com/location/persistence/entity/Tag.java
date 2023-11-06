@@ -1,10 +1,12 @@
 package com.location.persistence.entity;
 
-import jakarta.persistence.Column;
+import com.location.model.TagsEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -16,17 +18,23 @@ public class Tag {
   @SequenceGenerator(name = "tagSequenceGenerator", sequenceName = "tag_id_seq", allocationSize = 1)
   private Long id;
 
-  @Column(name = "poi_id")
-  private Long poiID;
+  private TagsEnum name;
 
-  private String name;
+  @ManyToOne
+  @JoinColumn(name = "poi_id")
+  private Poi poi;
 
   public Tag() {}
 
-  public Tag(Long id, Long poiID, String name) {
+  public Tag(Long id, TagsEnum name) {
     this.id = id;
-    this.poiID = poiID;
     this.name = name;
+  }
+
+  public Tag(Long id, TagsEnum name, Poi poi) {
+    this.id = id;
+    this.name = name;
+    this.poi = poi;
   }
 
   public Long getId() {
@@ -37,19 +45,19 @@ public class Tag {
     this.id = id;
   }
 
-  public Long getPoiID() {
-    return poiID;
+  public Poi getPoi() {
+    return poi;
   }
 
-  public void setPoiID(Long poiID) {
-    this.poiID = poiID;
+  public void setPoi(Poi poi) {
+    this.poi = poi;
   }
 
-  public String getName() {
+  public TagsEnum getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(TagsEnum name) {
     this.name = name;
   }
 }

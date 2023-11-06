@@ -2,6 +2,7 @@ package com.location.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.location.model.TagsEnum;
 import com.location.persistence.entity.Tag;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class tagRepositoryTest {
   @Autowired TagRepository tagRepository;
 
   private static Tag createTag() {
-    Tag tag = new Tag(1L, 2L, "name");
+    Tag tag = new Tag(1L, TagsEnum.MEAT);
     return tag;
   }
 
@@ -42,7 +43,6 @@ public class tagRepositoryTest {
     Tag tag = createTag();
     tagRepository.save(tag);
     Tag tagFromDB = tagRepository.findById(tag.getId()).get();
-    assertEquals(tag.getPoiID(), tagFromDB.getPoiID());
     assertEquals(tag.getName(), tagFromDB.getName());
   }
 }
