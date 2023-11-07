@@ -1,0 +1,4 @@
+{
+    "type" : "string",
+    "enum" : ["food", "repair", "restaurant_food", "china_food", "pizza", "meat", "vegan", "organic", "grocery", "gift"]
+}

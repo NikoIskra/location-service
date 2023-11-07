@@ -1,0 +1,50 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Spring boot template",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/v1/healthcheck": {
+      "get": {
+        "tags": [
+          "healthcheck"
+        ],
+        "description": "Healthcheck endpoint",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/poi" : {
+      "post" : {
+        "operationId": "addPoi",
+        "tags" : [
+          "poi"
+        ],
+        "description": "Insert poi",
+        "parameters": [
+          {
+            "$ref" : "common/params/headers/accountIDParam.json"
+          }
+        ],
+        "requestBody" : {
+          "$ref" : "APIspecs/requests/poiPostRequestBody.json"
+        },
+        "responses": {
+          "201" : {
+            "$ref" : "APIspecs/responses/poiCreated.json"
+          },
+          "400": {
+            "$ref": "APIspecs/responses/badRequest.json"
+          },
+          "409": {
+            "$ref": "APIspecs/responses/conflict.json"
+          }
+        }
+      }
+    }
+  }
+}
