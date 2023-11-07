@@ -9,7 +9,7 @@
     ],
     "properties" : {
         "externalId" : {
-            "$ref" : "../../../common/props/longID.json"
+            "type" : "string"
         },
         "name" : {
             "type" : "string",

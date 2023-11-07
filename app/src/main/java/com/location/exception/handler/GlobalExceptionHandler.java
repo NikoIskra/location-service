@@ -34,7 +34,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       HttpHeaders headers,
       HttpStatusCode status,
       WebRequest request) {
-    ErrorResponse errorResponse = new ErrorResponse().ok(false).errorMessage("validation failed");
+    ErrorResponse errorResponse = new ErrorResponse().ok(false).errorMessage(ex.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 

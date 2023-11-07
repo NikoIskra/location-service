@@ -26,6 +26,15 @@ public class Tag {
 
   public Tag() {}
 
+  public Tag(TagsEnum name) {
+    this.name = name;
+  }
+
+  public Tag(TagsEnum name, Poi poi) {
+    this.name = name;
+    this.poi = poi;
+  }
+
   public Tag(Long id, TagsEnum name) {
     this.id = id;
     this.name = name;

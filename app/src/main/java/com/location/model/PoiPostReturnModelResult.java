@@ -18,7 +18,7 @@ public class PoiPostReturnModelResult {
 
   private Long id;
 
-  private Long externalId;
+  private String externalId;
 
   private String name;
 
@@ -53,7 +53,7 @@ public class PoiPostReturnModelResult {
     this.id = id;
   }
 
-  public PoiPostReturnModelResult externalId(Long externalId) {
+  public PoiPostReturnModelResult externalId(String externalId) {
     this.externalId = externalId;
     return this;
   }
@@ -64,11 +64,11 @@ public class PoiPostReturnModelResult {
    * @return externalId
    */
   @JsonProperty("externalId")
-  public Long getExternalId() {
+  public String getExternalId() {
     return externalId;
   }
 
-  public void setExternalId(Long externalId) {
+  public void setExternalId(String externalId) {
     this.externalId = externalId;
   }
 
