@@ -28,11 +28,11 @@
         "description" : {
             "$ref" : "../../../common/props/description.json"
         },
-        "lat" : {
+        "latitude" : {
             "type" : "number",
             "format" : "float"
         },
-        "long" : {
+        "longitude" : {
             "type" : "number",
             "format" : "float"
         }

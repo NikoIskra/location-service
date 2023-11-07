@@ -19,7 +19,7 @@ CREATE SEQUENCE IF NOT EXISTS poi_id_seq
     description character varying(512) ,
     latitude real NOT NULL,
     longitude real NOT NULL,
-    location geography(point) NOT NULL,
+    location geography(point, 4326) NOT NULL,
     status character varying(8)  NOT NULL,
     created_at timestamp without time zone DEFAULT now(),
     updated_at timestamp without time zone,

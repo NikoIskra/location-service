@@ -28,9 +28,9 @@ public class PoiPostReturnModelResult {
 
   private String description;
 
-  private Float lat;
+  private Float latitude;
 
-  private Float _long;
+  private Float longitude;
 
   private StatusEnum status;
 
@@ -159,42 +159,42 @@ public class PoiPostReturnModelResult {
     this.description = description;
   }
 
-  public PoiPostReturnModelResult lat(Float lat) {
-    this.lat = lat;
+  public PoiPostReturnModelResult latitude(Float latitude) {
+    this.latitude = latitude;
     return this;
   }
 
   /**
-   * Get lat
+   * Get latitude
    *
-   * @return lat
+   * @return latitude
    */
-  @JsonProperty("lat")
-  public Float getLat() {
-    return lat;
+  @JsonProperty("latitude")
+  public Float getLatitude() {
+    return latitude;
   }
 
-  public void setLat(Float lat) {
-    this.lat = lat;
+  public void setLatitude(Float latitude) {
+    this.latitude = latitude;
   }
 
-  public PoiPostReturnModelResult _long(Float _long) {
-    this._long = _long;
+  public PoiPostReturnModelResult longitude(Float longitude) {
+    this.longitude = longitude;
     return this;
   }
 
   /**
-   * Get _long
+   * Get longitude
    *
-   * @return _long
+   * @return longitude
    */
-  @JsonProperty("long")
-  public Float getLong() {
-    return _long;
+  @JsonProperty("longitude")
+  public Float getLongitude() {
+    return longitude;
   }
 
-  public void setLong(Float _long) {
-    this._long = _long;
+  public void setLongitude(Float longitude) {
+    this.longitude = longitude;
   }
 
   public PoiPostReturnModelResult status(StatusEnum status) {
@@ -232,14 +232,14 @@ public class PoiPostReturnModelResult {
         && Objects.equals(this.type, poiPostReturnModelResult.type)
         && Objects.equals(this.tags, poiPostReturnModelResult.tags)
         && Objects.equals(this.description, poiPostReturnModelResult.description)
-        && Objects.equals(this.lat, poiPostReturnModelResult.lat)
-        && Objects.equals(this._long, poiPostReturnModelResult._long)
+        && Objects.equals(this.latitude, poiPostReturnModelResult.latitude)
+        && Objects.equals(this.longitude, poiPostReturnModelResult.longitude)
         && Objects.equals(this.status, poiPostReturnModelResult.status);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, externalId, name, type, tags, description, lat, _long, status);
+    return Objects.hash(id, externalId, name, type, tags, description, latitude, longitude, status);
   }
 
   @Override
@@ -252,8 +252,8 @@ public class PoiPostReturnModelResult {
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    lat: ").append(toIndentedString(lat)).append("\n");
-    sb.append("    _long: ").append(toIndentedString(_long)).append("\n");
+    sb.append("    latitude: ").append(toIndentedString(latitude)).append("\n");
+    sb.append("    longitude: ").append(toIndentedString(longitude)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("}");
     return sb.toString();
