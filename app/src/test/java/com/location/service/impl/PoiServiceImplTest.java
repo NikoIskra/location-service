@@ -2,11 +2,7 @@ package com.location.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -20,10 +16,9 @@ import com.location.model.TagsEnum;
 import com.location.model.TypeEnum;
 import com.location.persistence.entity.Poi;
 import com.location.persistence.entity.Tag;
+import com.location.persistence.repository.CustomPoiJPARepository;
 import com.location.service.EntityConverterService;
 import com.location.service.PoiValidator;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,13 +30,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class PoiServiceImplTest {
-  @Mock EntityManager entityManager;
 
   @Mock EntityConverterService entityConverterService;
 
-  @Mock Query query;
-
   @Mock PoiValidator poiValidator;
+
+  @Mock CustomPoiJPARepository customPoiRepository;
 
   @InjectMocks PoiServiceImpl poiServiceImpl;
 
@@ -103,18 +97,14 @@ public class PoiServiceImplTest {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
     Poi poi = createPoi();
     PoiPostReturnModel poiPostReturnModel = createPoiPostReturnModel();
-    Query query = mock(Query.class);
-    when(query.setParameter(anyString(), any())).thenReturn(query);
     when(entityConverterService.convertPoiPostRequestModelToPoi(poiPostRequestModel))
         .thenReturn(poi);
-    when(entityManager.createNativeQuery(anyString())).thenReturn(query);
-    when(query.getSingleResult()).thenReturn(1L);
-    when(entityConverterService.convertPoiToReturnModel(poi, 1L)).thenReturn(poiPostReturnModel);
+    when(entityConverterService.convertPoiToReturnModel(poi)).thenReturn(poiPostReturnModel);
     PoiPostReturnModel poiPostReturnModel2 = poiServiceImpl.save(uuid, poiPostRequestModel);
+    verify(customPoiRepository).insertPoi(poi);
     verify(poiValidator).validatePoiPost(uuid, poiPostRequestModel);
-    verify(entityManager, times(3)).createNativeQuery(any());
     verify(entityConverterService).convertPoiPostRequestModelToPoi(poiPostRequestModel);
-    verify(entityConverterService).convertPoiToReturnModel(poi, 1L);
+    verify(entityConverterService).convertPoiToReturnModel(poi);
     assertEquals(true, poiPostReturnModel2.isOk());
     assertEquals(1L, poiPostReturnModel2.getResult().getId());
     assertEquals(poiPostRequestModel.getTags(), poiPostReturnModel2.getResult().getTags());
@@ -138,6 +128,6 @@ public class PoiServiceImplTest {
         .validatePoiPost(uuid, poiPostRequestModel);
     assertThrows(BadRequestException.class, () -> poiServiceImpl.save(uuid, poiPostRequestModel));
     verify(poiValidator).validatePoiPost(uuid, poiPostRequestModel);
-    verifyNoInteractions(entityManager, query, entityConverterService);
+    verifyNoInteractions(entityConverterService, customPoiRepository);
   }
 }

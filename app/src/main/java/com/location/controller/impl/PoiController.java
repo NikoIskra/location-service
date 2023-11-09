@@ -7,16 +7,17 @@ import com.location.service.PoiService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class PoiController implements PoiApi {
 
-  @Autowired PoiService poiService;
+  private final PoiService poiService;
 
   @Override
   public ResponseEntity<PoiPostReturnModel> addPoi(

@@ -3,19 +3,21 @@ package com.location.service;
 import com.location.exception.BadRequestException;
 import com.location.model.AccountRoleIDReturnModel;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@RequiredArgsConstructor
 public class AccountApiClient {
 
-  @Value("${base.url}")
   private String baseUrl;
 
   private final RestTemplate restTemplate;
+
+  public AccountApiClient(@Value("${base.url}") String baseUrl, RestTemplate restTemplate) {
+    this.baseUrl = baseUrl;
+    this.restTemplate = restTemplate;
+  }
 
   public void verifyAccountID(UUID accountID) {
     try {

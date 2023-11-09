@@ -58,14 +58,6 @@ public class EntityConverterServiceTest {
   }
 
   @Test
-  void testConvertListTagsEnumToTags() {
-    List<TagsEnum> tagsEnums = createTagEnumList();
-    List<Tag> tags = entityConverterService.convertListTagsEnumToTags(tagsEnums);
-    assertEquals(tagsEnums.get(0), tags.get(0).getName());
-    assertEquals(tagsEnums.get(1), tags.get(1).getName());
-  }
-
-  @Test
   void testConvertPoiPostRequestModelToPoi() {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
     Poi poi = entityConverterService.convertPoiPostRequestModelToPoi(poiPostRequestModel);
@@ -73,13 +65,12 @@ public class EntityConverterServiceTest {
     assertEquals(poiPostRequestModel.getName(), poi.getName());
     assertEquals(poiPostRequestModel.getLatitude(), poi.getLatitude());
     assertEquals(poiPostRequestModel.getLongitude(), poi.getLongitude());
-    assertEquals(StatusEnum.VISIBLE, poi.getStatus());
   }
 
   @Test
   void testConvertPoiToReturnModel() {
     Poi poi = createPoi();
-    PoiPostReturnModel poiPostReturnModel = entityConverterService.convertPoiToReturnModel(poi, 1L);
+    PoiPostReturnModel poiPostReturnModel = entityConverterService.convertPoiToReturnModel(poi);
     assertEquals(1, poiPostReturnModel.getResult().getId());
     assertEquals(poi.getExternalID(), poiPostReturnModel.getResult().getExternalId());
     assertEquals(poi.getName(), poiPostReturnModel.getResult().getName());

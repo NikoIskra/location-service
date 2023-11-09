@@ -6,8 +6,8 @@ X-ACCOUNT-ID : {{account_id}}
 content-type : application/json
 
 {
-    "externalId" : 1,
-    "name" : "testname221",
+    "externalId" : 12,
+    "name" : "testname1",
     "type" : "tools",
     "tags" : [
         "food",

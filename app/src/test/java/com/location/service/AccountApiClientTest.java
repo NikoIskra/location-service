@@ -26,11 +26,11 @@ public class AccountApiClientTest {
   @Value("${base.url}")
   private String baseUrl;
 
-  private static final UUID uuid = UUID.fromString("ec73eca8-1e43-4c0d-b5a7-588b3c0e3c9c");
+  private static final UUID accountIdUuid = UUID.fromString("ec73eca8-1e43-4c0d-b5a7-588b3c0e3c9c");
 
   private static AccountRoleIDReturnModel createAccountRoleIDReturnModel() {
     AccountRoleIDReturnModelResult accountRoleIDReturnModelResult =
-        new AccountRoleIDReturnModelResult().roleId(uuid);
+        new AccountRoleIDReturnModelResult().roleId(accountIdUuid);
     AccountRoleIDReturnModel accountRoleIDReturnModel =
         new AccountRoleIDReturnModel().ok(true).result(accountRoleIDReturnModelResult);
     return accountRoleIDReturnModel;
@@ -42,9 +42,9 @@ public class AccountApiClientTest {
     when(restTemplate.getForObject(
             baseUrl + "/api/v1/account/{account_id}/role/PROVIDER",
             AccountRoleIDReturnModel.class,
-            uuid.toString()))
+            accountIdUuid.toString()))
         .thenReturn(accountRoleIDReturnModel);
-    assertDoesNotThrow(() -> accountApiClient.verifyAccountID(uuid));
+    assertDoesNotThrow(() -> accountApiClient.verifyAccountID(accountIdUuid));
   }
 
   @Test
@@ -52,8 +52,8 @@ public class AccountApiClientTest {
     when(restTemplate.getForObject(
             "http://localhost:3000/api/v1/account/{account_id}/role/PROVIDER",
             AccountRoleIDReturnModel.class,
-            uuid.toString()))
+            accountIdUuid.toString()))
         .thenThrow(RestClientException.class);
-    assertThrows(BadRequestException.class, () -> accountApiClient.verifyAccountID(uuid));
+    assertThrows(BadRequestException.class, () -> accountApiClient.verifyAccountID(accountIdUuid));
   }
 }

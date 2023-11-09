@@ -1,18 +1,15 @@
 package com.location.service;
 
+import com.location.converter.TagEnumToTagListConverter;
+import com.location.converter.TagToTagEnumListConverter;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
-import com.location.model.StatusEnum;
-import com.location.model.TagsEnum;
 import com.location.persistence.entity.Poi;
-import com.location.persistence.entity.Tag;
-import java.util.ArrayList;
-import java.util.List;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class EntityConverterService {
@@ -28,34 +25,27 @@ public class EntityConverterService {
   }
 
   public Poi convertPoiPostRequestModelToPoi(PoiPostRequestModel poiPostRequestModel) {
+    TypeMap<PoiPostRequestModel, Poi> typeMap =
+        modelMapper.createTypeMap(PoiPostRequestModel.class, Poi.class);
+    typeMap.addMappings(
+        mapper ->
+            mapper
+                .using(new TagEnumToTagListConverter())
+                .map(PoiPostRequestModel::getTags, Poi::setTags));
     Poi poi = modelMapper.map(poiPostRequestModel, Poi.class);
-    if (!CollectionUtils.isEmpty(poiPostRequestModel.getTags())) {
-      poi.setTags(convertListTagsEnumToTags(poiPostRequestModel.getTags()));
-    }
-    poi.setStatus(StatusEnum.VISIBLE);
     return poi;
   }
 
-  public List<Tag> convertListTagsEnumToTags(List<TagsEnum> tagsEnums) {
-    List<Tag> tags = new ArrayList<>();
-    for (TagsEnum tagsEnum : tagsEnums) {
-      Tag tag = new Tag(tagsEnum);
-      tags.add(tag);
-    }
-    return tags;
-  }
-
-  public PoiPostReturnModel convertPoiToReturnModel(Poi poi, Long poiID) {
+  public PoiPostReturnModel convertPoiToReturnModel(Poi poi) {
+    TypeMap<Poi, PoiPostReturnModelResult> typeMap =
+        modelMapper.createTypeMap(Poi.class, PoiPostReturnModelResult.class);
+    typeMap.addMappings(
+        mapper ->
+            mapper
+                .using(new TagToTagEnumListConverter())
+                .map(Poi::getTags, PoiPostReturnModelResult::setTags));
     PoiPostReturnModelResult poiPostReturnModelResult =
         modelMapper.map(poi, PoiPostReturnModelResult.class);
-    List<TagsEnum> tagsEnums = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(poi.getTags())) {
-      for (Tag tag : poi.getTags()) {
-        tagsEnums.add(tag.getName());
-      }
-    }
-    poiPostReturnModelResult.setTags(tagsEnums);
-    poiPostReturnModelResult.setId(poiID);
     return new PoiPostReturnModel().ok(true).result(poiPostReturnModelResult);
   }
 }

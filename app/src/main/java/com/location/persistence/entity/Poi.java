@@ -30,7 +30,7 @@ public class Poi {
 
   private TypeEnum type;
 
-  @OneToMany(mappedBy = "poi", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "poi", cascade = CascadeType.MERGE)
   private List<Tag> tags;
 
   private String description;
