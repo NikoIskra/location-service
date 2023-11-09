@@ -5,7 +5,7 @@
             "$ref" : "../../../../common/props/longID.json"
         },
         "externalId" : {
-            "$ref" : "../../../../common/props/longID.json"
+            "type" : "string"
         },
         "name" : {
             "type" : "string"

@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.*;
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen")
 public class PoiPostRequestModel {
 
-  private Long externalId;
+  private String externalId;
 
   private String name;
 
@@ -33,7 +33,7 @@ public class PoiPostRequestModel {
   /**
    * Default constructor
    *
-   * @deprecated Use {@link PoiPostRequestModel#PoiPostRequestModel(Long, String, TypeEnum)}
+   * @deprecated Use {@link PoiPostRequestModel#PoiPostRequestModel(String, String, TypeEnum)}
    */
   @Deprecated
   public PoiPostRequestModel() {
@@ -41,13 +41,13 @@ public class PoiPostRequestModel {
   }
 
   /** Constructor with only required parameters */
-  public PoiPostRequestModel(Long externalId, String name, TypeEnum type) {
+  public PoiPostRequestModel(String externalId, String name, TypeEnum type) {
     this.externalId = externalId;
     this.name = name;
     this.type = type;
   }
 
-  public PoiPostRequestModel externalId(Long externalId) {
+  public PoiPostRequestModel externalId(String externalId) {
     this.externalId = externalId;
     return this;
   }
@@ -59,11 +59,11 @@ public class PoiPostRequestModel {
    */
   @NotNull
   @JsonProperty("externalId")
-  public Long getExternalId() {
+  public String getExternalId() {
     return externalId;
   }
 
-  public void setExternalId(Long externalId) {
+  public void setExternalId(String externalId) {
     this.externalId = externalId;
   }
 

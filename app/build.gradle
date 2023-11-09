@@ -38,12 +38,16 @@ dependencies {
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'   
     // https://mvnrepository.com/artifact/com.h2database/h2
     testImplementation 'com.h2database:h2:2.2.222'
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    implementation 'org.apache.logging.log4j:log4j-core:3.0.0-alpha1'
+
 
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     implementation 'javax.validation:validation-api:2.0.0.Final'
     implementation  'org.flywaydb:flyway-core'
     implementation 'com.jayway.jsonpath:json-path:2.8.0'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
+    implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'org.modelmapper:modelmapper:3.1.1'
 }
 

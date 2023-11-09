@@ -2,7 +2,7 @@
     "ok" : true,
     "result" : {
         "id" : 1,
-        "externalId" : 2,
+        "externalId" : "2",
         "name" : "name",
         "type" : "tools",
         "tags" : [
