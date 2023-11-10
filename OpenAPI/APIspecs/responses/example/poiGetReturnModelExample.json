@@ -1,0 +1,18 @@
+{
+    "ok" : true,
+    "result" : {
+        "id" : 1,
+        "externalId" : "2",
+        "name" : "name",
+        "type" : "tools",
+        "tags" : [
+            "repair"
+        ],
+        "description" : "description",
+        "latitude" : 1.4,
+        "longitude" : 1.5,
+        "status" : "visible",
+        "createdAt" : "2023-10-11T07:34Z",
+        "updatedAt" : "2023-10-11T07:34Z"
+    }
+}

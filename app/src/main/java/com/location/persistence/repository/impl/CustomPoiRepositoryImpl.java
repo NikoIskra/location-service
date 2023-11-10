@@ -19,14 +19,14 @@ public class CustomPoiRepositoryImpl implements CustomPoiRepository {
 
   private static final String poiInsertQueryString =
       """
-          INSERT INTO \"location-service\".poi (external_id, name, type, description, latitude, longitude, location, status)
+          INSERT INTO poi (external_id, name, type, description, latitude, longitude, location, status)
           VALUES (:externalID, :name, :type, :description, :latitude, :longitude, ST_MakePoint(:longitude, :latitude), 'visible')
           RETURNING id;
           """;
 
   private static final String tagInsertQueryString =
       """
-          INSERT INTO \"location-service\".tag (poi_id, name) VALUES (:poiID, :name);
+          INSERT INTO tag (poi_id, name) VALUES (:poiID, :name);
           """;
 
   @Override

@@ -1,9 +1,12 @@
 package com.location.persistence.entity;
 
+import com.location.converter.StatusEnumConverter;
+import com.location.converter.TypeEnumConverter;
 import com.location.model.StatusEnum;
 import com.location.model.TypeEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +31,7 @@ public class Poi {
 
   private String name;
 
+  @Convert(converter = TypeEnumConverter.class)
   private TypeEnum type;
 
   @OneToMany(mappedBy = "poi", cascade = CascadeType.MERGE)
@@ -39,6 +43,7 @@ public class Poi {
 
   private Float longitude;
 
+  @Convert(converter = StatusEnumConverter.class)
   private StatusEnum status;
 
   @Column(name = "created_at", insertable = false)

@@ -2,6 +2,7 @@ package com.location.config;
 
 import com.location.converter.TagEnumToTagListConverter;
 import com.location.converter.TagToTagEnumListConverter;
+import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModelResult;
 import com.location.persistence.entity.Poi;
@@ -38,6 +39,13 @@ public class Configuration {
             mapper
                 .using(new TagToTagEnumListConverter())
                 .map(Poi::getTags, PoiPostReturnModelResult::setTags));
+    TypeMap<Poi, PoiGetReturnModelResult> poiToPoiGetReturnModelResultTypeMap =
+        modelMapper.createTypeMap(Poi.class, PoiGetReturnModelResult.class);
+    poiToPoiGetReturnModelResultTypeMap.addMappings(
+        mapper ->
+            mapper
+                .using(new TagToTagEnumListConverter())
+                .map(Poi::getTags, PoiGetReturnModelResult::setTags));
     return modelMapper;
   }
 

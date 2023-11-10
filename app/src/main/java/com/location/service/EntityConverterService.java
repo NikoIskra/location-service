@@ -1,5 +1,7 @@
 package com.location.service;
 
+import com.location.model.PoiGetReturnModel;
+import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
@@ -30,5 +32,11 @@ public class EntityConverterService {
     PoiPostReturnModelResult poiPostReturnModelResult =
         modelMapper.map(poi, PoiPostReturnModelResult.class);
     return new PoiPostReturnModel().ok(true).result(poiPostReturnModelResult);
+  }
+
+  public PoiGetReturnModel convertPoiToGetReturnModel(Poi poi) {
+    PoiGetReturnModelResult poiGetReturnModelResult =
+        modelMapper.map(poi, PoiGetReturnModelResult.class);
+    return new PoiGetReturnModel().ok(true).result(poiGetReturnModelResult);
   }
 }

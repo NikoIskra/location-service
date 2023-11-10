@@ -1,0 +1,45 @@
+{
+    "type" : "object",
+    "properties" : {
+        "id" : {
+            "$ref" : "../../../../common/props/longID.json"
+        },
+        "externalId" : {
+            "type" : "string"
+        },
+        "name" : {
+            "type" : "string"
+        },
+        "type" : {
+            "$ref" : "../../../../common/enums/typeEnum.json"
+        },
+        "tags" : {
+            "type" : "array",
+            "items" : {
+                "$ref" : "../../../../common/enums/tagsEnum.json"
+            }
+        },
+        "description" : {
+            "$ref" : "../../../../common/props/description.json"
+        },
+        "latitude" : {
+            "type" : "number",
+            "format" : "float"
+        },
+        "longitude" : {
+            "type" : "number",
+            "format" : "float"
+        },
+        "status" : {
+            "$ref" : "../../../../common/enums/statusEnum.json"
+        },
+        "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+        },
+        "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+        }
+    }
+}

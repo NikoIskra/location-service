@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.2",
+  "openapi": "3.0.3",
   "info": {
     "title": "Spring boot template",
     "version": "1.0"
@@ -42,6 +42,31 @@
           },
           "409": {
             "$ref": "APIspecs/responses/conflict.json"
+          }
+        }
+      }
+    },
+    "/api/v1/poi/{poi-id}" : {
+      "get" : {
+        "operationId" : "getPoi",
+        "tags" : [
+          "poi"
+        ],
+        "description" : "get Poi",
+        "parameters" : [
+          {
+            "$ref" : "common/params/headers/accountIDParam.json"
+          },
+          {
+            "$ref" : "common/params/pathParams/poiIDParam.json"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "$ref": "APIspecs/responses/poiGetOk.json"
+          },
+          "404" : {
+            "$ref": "APIspecs/responses/notFound.json"
           }
         }
       }

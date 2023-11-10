@@ -1,6 +1,8 @@
 package com.location.persistence.entity;
 
+import com.location.converter.TagEnumConverter;
 import com.location.model.TagsEnum;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,7 @@ public class Tag {
   @SequenceGenerator(name = "tagSequenceGenerator", sequenceName = "tag_id_seq", allocationSize = 1)
   private Long id;
 
+  @Convert(converter = TagEnumConverter.class)
   private TagsEnum name;
 
   @ManyToOne

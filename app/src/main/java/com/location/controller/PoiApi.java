@@ -4,6 +4,7 @@
  */
 package com.location.controller;
 
+import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import jakarta.annotation.Generated;
@@ -34,5 +35,21 @@ public interface PoiApi {
   ResponseEntity<PoiPostReturnModel> addPoi(
       @NotNull @RequestHeader(value = "X-ACCOUNT-ID", required = true) UUID X_ACCOUNT_ID,
       @Valid @RequestBody PoiPostRequestModel poiPostRequestModel)
+      throws Exception;
+
+  /**
+   * GET /api/v1/poi/{poi-id} get Poi
+   *
+   * @param X_ACCOUNT_ID (required)
+   * @param poiId (required)
+   * @return Retrieved (status code 200) or Not found! (status code 404)
+   */
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "/api/v1/poi/{poi-id}",
+      produces = {"application/json"})
+  ResponseEntity<PoiGetReturnModel> getPoi(
+      @NotNull @RequestHeader(value = "X-ACCOUNT-ID", required = true) UUID X_ACCOUNT_ID,
+      @PathVariable("poi-id") Long poiId)
       throws Exception;
 }

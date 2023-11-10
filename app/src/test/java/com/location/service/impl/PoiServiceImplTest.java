@@ -2,12 +2,15 @@ package com.location.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.location.exception.BadRequestException;
+import com.location.model.PoiGetReturnModel;
+import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
@@ -21,6 +24,7 @@ import com.location.service.EntityConverterService;
 import com.location.service.PoiValidator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,6 +76,23 @@ public class PoiServiceImplTest {
     List<Tag> tags = List.of(tag1, tag2);
     poi.setTags(tags);
     return poi;
+  }
+
+  private static PoiGetReturnModel createPoiGetReturnModel() {
+    List<TagsEnum> tagsEnums = new ArrayList<>();
+    tagsEnums.add(TagsEnum.CHINA_FOOD);
+    tagsEnums.add(TagsEnum.FOOD);
+    PoiGetReturnModelResult poiGetReturnModelResult =
+        new PoiGetReturnModelResult()
+            .id(1L)
+            .externalId("1")
+            .name("name")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tagsEnums)
+            .description("desc")
+            .latitude(Float.valueOf("1.4"))
+            .longitude(Float.valueOf("1.5"));
+    return new PoiGetReturnModel().ok(true).result(poiGetReturnModelResult);
   }
 
   private static PoiPostReturnModel createPoiPostReturnModel() {
@@ -128,6 +149,34 @@ public class PoiServiceImplTest {
         .validatePoiPost(uuid, poiPostRequestModel);
     assertThrows(BadRequestException.class, () -> poiServiceImpl.save(uuid, poiPostRequestModel));
     verify(poiValidator).validatePoiPost(uuid, poiPostRequestModel);
+    verifyNoInteractions(entityConverterService, customPoiRepository);
+  }
+
+  @Test
+  void testGet() throws Exception {
+    Poi poi = createPoi();
+    PoiGetReturnModel poiGetReturnModel = createPoiGetReturnModel();
+    when(customPoiRepository.findById(anyLong())).thenReturn(Optional.of(poi));
+    when(entityConverterService.convertPoiToGetReturnModel(poi)).thenReturn(poiGetReturnModel);
+    PoiGetReturnModel poiGetReturnModel2 = poiServiceImpl.get(uuid, 1L);
+    assertEquals(true, poiGetReturnModel.isOk());
+    assertEquals(1L, poiGetReturnModel2.getResult().getId());
+    assertEquals(poi.getName(), poiGetReturnModel2.getResult().getName());
+    assertEquals(poi.getExternalID(), poiGetReturnModel2.getResult().getExternalId());
+    assertEquals(poi.getType(), poiGetReturnModel2.getResult().getType());
+    assertEquals(poi.getLatitude(), poiGetReturnModel2.getResult().getLatitude());
+    assertEquals(poi.getLongitude(), poiGetReturnModel2.getResult().getLongitude());
+    verify(poiValidator).validatePoiGet(uuid, 1L);
+    verify(customPoiRepository).findById(anyLong());
+    verify(entityConverterService).convertPoiToGetReturnModel(poi);
+  }
+
+  @Test
+  void testGet_validationError() throws Exception {
+
+    doThrow(BadRequestException.class).when(poiValidator).validatePoiGet(uuid, 1L);
+    assertThrows(BadRequestException.class, () -> poiServiceImpl.get(uuid, 1L));
+    verify(poiValidator).validatePoiGet(uuid, 1L);
     verifyNoInteractions(entityConverterService, customPoiRepository);
   }
 }
