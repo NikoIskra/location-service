@@ -11,7 +11,7 @@ public class StatusEnumConverter implements AttributeConverter<StatusEnum, Strin
   @Override
   public String convertToDatabaseColumn(StatusEnum attribute) {
     if (attribute == null) {
-      return "visible";
+      throw new BadRequestException("conversion failed");
     }
     return attribute.toString();
   }

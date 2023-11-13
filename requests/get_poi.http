@@ -20,9 +20,9 @@ content-type : application/json
 
 ###
 
-@provider_id = {{poiPost.response.body.$.result.$.id}}
+@poi_id = {{poiPost.response.body.$.result.$.id}}
 
 # @name poiGet
-get http://localhost:3001/api/v1/poi/{{provider_id}}
+get http://localhost:3001/api/v1/poi/{{poi_id}}
 X-ACCOUNT-ID : {{account_id}}
 

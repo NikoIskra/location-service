@@ -11,7 +11,7 @@ public class TagEnumConverter implements AttributeConverter<TagsEnum, String> {
   @Override
   public String convertToDatabaseColumn(TagsEnum attribute) {
     if (attribute == null) {
-      return "gift";
+      throw new BadRequestException("conversion failed");
     }
     return attribute.toString();
   }

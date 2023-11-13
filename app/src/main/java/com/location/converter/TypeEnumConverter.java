@@ -11,7 +11,7 @@ public class TypeEnumConverter implements AttributeConverter<TypeEnum, String> {
   @Override
   public String convertToDatabaseColumn(TypeEnum attribute) {
     if (attribute == null) {
-      return "service";
+      throw new BadRequestException("conversion failed");
     }
     return attribute.toString();
   }

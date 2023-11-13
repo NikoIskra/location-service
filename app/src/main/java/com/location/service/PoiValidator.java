@@ -2,7 +2,6 @@ package com.location.service;
 
 import com.location.exception.BadRequestException;
 import com.location.exception.ConflictException;
-import com.location.exception.NotFoundException;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.TagsEnum;
 import com.location.persistence.repository.CustomPoiJPARepository;
@@ -29,13 +28,6 @@ public class PoiValidator {
     if (poiRepository.existsByExternalIDAndName(
         poiPostRequestModel.getExternalId(), poiPostRequestModel.getName())) {
       throw new ConflictException("location with that external ID and name already exists");
-    }
-  }
-
-  public void validatePoiGet(UUID accountID, Long poiId) {
-    accountApiClient.verifyAccountID(accountID);
-    if (!poiRepository.existsById(poiId)) {
-      throw new NotFoundException("Record does not exist");
     }
   }
 }

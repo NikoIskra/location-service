@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.location.exception.BadRequestException;
+import com.location.exception.NotFoundException;
 import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
@@ -166,17 +167,15 @@ public class PoiServiceImplTest {
     assertEquals(poi.getType(), poiGetReturnModel2.getResult().getType());
     assertEquals(poi.getLatitude(), poiGetReturnModel2.getResult().getLatitude());
     assertEquals(poi.getLongitude(), poiGetReturnModel2.getResult().getLongitude());
-    verify(poiValidator).validatePoiGet(uuid, 1L);
     verify(customPoiRepository).findById(anyLong());
     verify(entityConverterService).convertPoiToGetReturnModel(poi);
   }
 
   @Test
-  void testGet_validationError() throws Exception {
-
-    doThrow(BadRequestException.class).when(poiValidator).validatePoiGet(uuid, 1L);
-    assertThrows(BadRequestException.class, () -> poiServiceImpl.get(uuid, 1L));
-    verify(poiValidator).validatePoiGet(uuid, 1L);
-    verifyNoInteractions(entityConverterService, customPoiRepository);
+  void testGet_notFound() throws Exception {
+    when(customPoiRepository.findById(1L)).thenReturn(Optional.empty());
+    assertThrows(NotFoundException.class, () -> poiServiceImpl.get(uuid, 1L));
+    verify(customPoiRepository).findById(1L);
+    verifyNoInteractions(entityConverterService);
   }
 }
