@@ -4,6 +4,8 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.location.exception.BadRequestException;
+import com.location.model.PoiGetReturnModel;
+import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
@@ -70,6 +72,23 @@ public class PoiControllerTest {
     return new PoiPostReturnModel().ok(true).result(poiPostReturnModelResult);
   }
 
+  private static PoiGetReturnModel createPoiGetReturnModel() {
+    List<TagsEnum> tagsEnums = new ArrayList<>();
+    tagsEnums.add(TagsEnum.CHINA_FOOD);
+    tagsEnums.add(TagsEnum.FOOD);
+    PoiGetReturnModelResult poiGetReturnModelResult =
+        new PoiGetReturnModelResult()
+            .id(1L)
+            .externalId("1")
+            .name("name")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tagsEnums)
+            .description("desc")
+            .latitude(Float.valueOf("1.4"))
+            .longitude(Float.valueOf("1.5"));
+    return new PoiGetReturnModel().ok(true).result(poiGetReturnModelResult);
+  }
+
   @Test
   void testInsertPoi() throws Exception {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
@@ -88,13 +107,30 @@ public class PoiControllerTest {
   @Test
   void testInsertPoi_badRequest() throws Exception {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
-    PoiPostReturnModel poiPostReturnModel = createPoiPostReturnModel();
     when(poiServiceImpl.save(uuid, poiPostRequestModel)).thenThrow(BadRequestException.class);
     mvc.perform(
             MockMvcRequestBuilders.post("/api/v1/poi")
                 .header("X-ACCOUNT-ID", uuid.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(poiPostRequestModel)))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(false));
+  }
+
+  @Test
+  void testGetPoi() throws Exception {
+    PoiGetReturnModel poiGetReturnModel = createPoiGetReturnModel();
+    when(poiServiceImpl.get(uuid, 1L)).thenReturn(poiGetReturnModel);
+    mvc.perform(MockMvcRequestBuilders.get("/api/v1/poi/1").header("X-ACCOUNT-ID", uuid.toString()))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(true))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").value(1));
+  }
+
+  @Test
+  void testGetPoi_badRequest() throws Exception {
+    when(poiServiceImpl.get(uuid, 1L)).thenThrow(BadRequestException.class);
+    mvc.perform(MockMvcRequestBuilders.get("/api/v1/poi/1").header("X-ACCOUNT-ID", uuid.toString()))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(false));
   }

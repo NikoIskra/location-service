@@ -1,6 +1,7 @@
 package com.location.controller.impl;
 
 import com.location.controller.PoiApi;
+import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.service.PoiService;
@@ -29,5 +30,12 @@ public class PoiController implements PoiApi {
     return ResponseEntity.status(HttpStatus.CREATED)
         .headers(returnHeaders)
         .body(poiPostReturnModel);
+  }
+
+  @Override
+  public ResponseEntity<PoiGetReturnModel> getPoi(@NotNull UUID X_ACCOUNT_ID, Long poiId)
+      throws Exception {
+    PoiGetReturnModel poiGetReturnModel = poiService.get(X_ACCOUNT_ID, poiId);
+    return ResponseEntity.status(HttpStatus.OK).body(poiGetReturnModel);
   }
 }

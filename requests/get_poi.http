@@ -1,0 +1,28 @@
+@account_id = 87affa81-bfb5-4a42-be4f-84d3a7a9f458
+
+# @name poiPost
+post http://localhost:3001/api/v1/poi
+X-ACCOUNT-ID : {{account_id}}
+content-type : application/json
+
+{
+    "externalId" : 12,
+    "name" : "testname1211221221",
+    "type" : "tools",
+    "tags" : [
+        "food",
+        "repair"
+    ],
+    "description" : "test",
+    "latitude" : 1.7,
+    "longitude" : 1.5
+}
+
+###
+
+@poi_id = {{poiPost.response.body.$.result.$.id}}
+
+# @name poiGet
+get http://localhost:3001/api/v1/poi/{{poi_id}}
+X-ACCOUNT-ID : {{account_id}}
+

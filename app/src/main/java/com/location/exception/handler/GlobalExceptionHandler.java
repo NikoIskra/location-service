@@ -2,6 +2,7 @@ package com.location.exception.handler;
 
 import com.location.exception.BadRequestException;
 import com.location.exception.ConflictException;
+import com.location.exception.NotFoundException;
 import com.location.model.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<ErrorResponse> handleConflictExcpetion(ConflictException ex) {
     ErrorResponse errorResponse = new ErrorResponse().ok(false).errorMessage(ex.getMessage());
     return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler
+  protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
+    ErrorResponse errorResponse = new ErrorResponse().ok(false).errorMessage(ex.getMessage());
+    return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.NOT_FOUND);
   }
 
   @Override

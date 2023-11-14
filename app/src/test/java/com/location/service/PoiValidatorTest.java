@@ -12,7 +12,7 @@ import com.location.exception.ConflictException;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.TagsEnum;
 import com.location.model.TypeEnum;
-import com.location.persistence.repository.PoiRepository;
+import com.location.persistence.repository.CustomPoiJPARepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class PoiValidatorTest {
-  @Mock PoiRepository poiRepository;
+  @Mock CustomPoiJPARepository poiRepository;
   @Mock AccountApiClient accountApiClient;
   @InjectMocks PoiValidator poiValidator;
 

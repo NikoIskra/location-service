@@ -4,7 +4,7 @@ import com.location.exception.BadRequestException;
 import com.location.exception.ConflictException;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.TagsEnum;
-import com.location.persistence.repository.PoiRepository;
+import com.location.persistence.repository.CustomPoiJPARepository;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,7 +17,7 @@ public class PoiValidator {
 
   private final AccountApiClient accountApiClient;
 
-  private final PoiRepository poiRepository;
+  private final CustomPoiJPARepository poiRepository;
 
   public void validatePoiPost(UUID accountID, PoiPostRequestModel poiPostRequestModel) {
     accountApiClient.verifyAccountID(accountID);
