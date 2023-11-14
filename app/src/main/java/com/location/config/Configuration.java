@@ -5,6 +5,7 @@ import com.location.converter.TagToTagEnumListConverter;
 import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModelResult;
+import com.location.model.SearchNearestPoiModel;
 import com.location.persistence.entity.Poi;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -46,6 +47,13 @@ public class Configuration {
             mapper
                 .using(new TagToTagEnumListConverter())
                 .map(Poi::getTags, PoiGetReturnModelResult::setTags));
+    TypeMap<Poi, SearchNearestPoiModel> poiToSearchModelTypeMap =
+        modelMapper.createTypeMap(Poi.class, SearchNearestPoiModel.class);
+    poiToSearchModelTypeMap.addMappings(
+        mapper ->
+            mapper
+                .using(new TagToTagEnumListConverter())
+                .map(Poi::getTags, SearchNearestPoiModel::setTags));
     return modelMapper;
   }
 

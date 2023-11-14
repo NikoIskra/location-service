@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.apache.logging.slf4j.SLF4JLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,12 @@ public class CustomPoiRepositoryImpl implements CustomPoiRepository {
       """
           INSERT INTO tag (poi_id, name) VALUES (:poiID, :name);
           """;
+
+  private static final String searchNearestQueryString =
+      """
+    select p.id, p.external_id, p.name, p.type, p.description, p.latitude, p.longitude, p.status, p.created_at, p.updated_at, ST_DistanceSphere(p.location\\:::geometry, ST_MakePoint(:longitude, :latitude)) as distance
+    from poi p WHERE ST_DWithin(p.location, ST_MakePoint(:longitude, :latitude), :meters) AND p.status = 'visible' ORDER BY distance ASC;
+      """;
 
   @Override
   @Transactional
@@ -53,5 +60,20 @@ public class CustomPoiRepositoryImpl implements CustomPoiRepository {
               .setParameter("name", tag.getName().toString());
       insertTagQuery.executeUpdate();
     }
+  }
+
+  @Override
+  public List<Poi> searchNearest(
+      Integer meters, Float latitude, Float longitude, Integer page, Integer pageSize) {
+    Query searchNearestQuery =
+        entityManager
+            .createNativeQuery(searchNearestQueryString, Poi.class)
+            .setParameter("latitude", latitude)
+            .setParameter("longitude", longitude)
+            .setParameter("meters", meters)
+            .setFirstResult(page * pageSize)
+            .setMaxResults(pageSize);
+    List<Poi> objects = searchNearestQuery.getResultList();
+    return objects;
   }
 }

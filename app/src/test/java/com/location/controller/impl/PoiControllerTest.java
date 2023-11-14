@@ -9,6 +9,9 @@ import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
+import com.location.model.SearchNearestPoiModel;
+import com.location.model.SearchNearestReturnModel;
+import com.location.model.SearchNearestReturnModelResult;
 import com.location.model.StatusEnum;
 import com.location.model.TagsEnum;
 import com.location.model.TypeEnum;
@@ -89,6 +92,32 @@ public class PoiControllerTest {
     return new PoiGetReturnModel().ok(true).result(poiGetReturnModelResult);
   }
 
+  private static SearchNearestReturnModel createSearchNearestReturnModel() {
+    List<TagsEnum> tags = List.of(TagsEnum.FOOD, TagsEnum.PIZZA);
+    SearchNearestPoiModel searchNearestPoiModel =
+        new SearchNearestPoiModel()
+            .id(1L)
+            .externalId("1")
+            .name("name")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tags)
+            .description("desc")
+            .latitude(Float.valueOf("1.3"))
+            .longitude(Float.valueOf("1.3"))
+            .status(StatusEnum.VISIBLE);
+    List<SearchNearestPoiModel> pois = List.of(searchNearestPoiModel, searchNearestPoiModel);
+    SearchNearestReturnModelResult result =
+        new SearchNearestReturnModelResult()
+            .data(pois)
+            .page(0)
+            .pageSize(50)
+            .latitude(Float.valueOf("1.3"))
+            .longitude(Float.valueOf("1.3"))
+            .distance(Float.valueOf("27"))
+            .numberOfPages(2);
+    return new SearchNearestReturnModel().ok(true).result(result);
+  }
+
   @Test
   void testInsertPoi() throws Exception {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
@@ -133,5 +162,35 @@ public class PoiControllerTest {
     mvc.perform(MockMvcRequestBuilders.get("/api/v1/poi/1").header("X-ACCOUNT-ID", uuid.toString()))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(false));
+  }
+
+  @Test
+  void testSearchNearest() throws Exception {
+    SearchNearestReturnModel searchNearestReturnModel = createSearchNearestReturnModel();
+    when(poiServiceImpl.searchNearest(
+            uuid, 25000, Float.valueOf("1.3"), Float.valueOf("1.3"), 0, 50))
+        .thenReturn(searchNearestReturnModel);
+    mvc.perform(
+            MockMvcRequestBuilders.get(
+                    "http://localhost:3001/api/v1/poi/distance/25000?latitude=1.3&longitude=1.3&page=0&page-size=50")
+                .header("X-ACCOUNT-ID", uuid.toString()))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(true))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result.page").value(0))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result.data[0].id").value(1));
+  }
+
+  @Test
+  void testSearchNearest_badRequest() throws Exception {
+    when(poiServiceImpl.searchNearest(
+            uuid, 25000, Float.valueOf("1.3"), Float.valueOf("1.3"), 0, 50))
+        .thenThrow(new BadRequestException("bad request"));
+    mvc.perform(
+            MockMvcRequestBuilders.get(
+                    "http://localhost:3001/api/v1/poi/distance/25000?latitude=1.3&longitude=1.3&page=0&page-size=50")
+                .header("X-ACCOUNT-ID", uuid.toString()))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(false))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessage").value("bad request"));
   }
 }

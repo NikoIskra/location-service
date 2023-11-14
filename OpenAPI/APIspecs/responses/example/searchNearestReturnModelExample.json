@@ -1,0 +1,26 @@
+{
+    "ok" : true,
+    "result" : {
+        "data" : [
+            {
+                "id" : "1",
+                "externalId" : "1",
+                "name" : "example name",
+                "type" : "service",
+                "tags" : [
+                    "repair",
+                    "gift"
+                ],
+                "description" : "example description",
+                "latitude" : "1.4",
+                "longitude" : "1.5",
+                "status" : "visible"
+            }
+        ],
+        "page" : 0,
+        "pageSize" : 50,
+        "latitude" : 1.4,
+        "longitude" : 1.5,
+        "numberOfPages" : 2
+    }
+}

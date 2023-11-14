@@ -3,6 +3,7 @@ package com.location.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -15,12 +16,15 @@ import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
+import com.location.model.SearchNearestPoiModel;
+import com.location.model.SearchNearestReturnModel;
 import com.location.model.StatusEnum;
 import com.location.model.TagsEnum;
 import com.location.model.TypeEnum;
 import com.location.persistence.entity.Poi;
 import com.location.persistence.entity.Tag;
 import com.location.persistence.repository.CustomPoiJPARepository;
+import com.location.persistence.repository.TagRepository;
 import com.location.service.EntityConverterService;
 import com.location.service.PoiValidator;
 import java.util.ArrayList;
@@ -41,6 +45,8 @@ public class PoiServiceImplTest {
   @Mock PoiValidator poiValidator;
 
   @Mock CustomPoiJPARepository customPoiRepository;
+
+  @Mock TagRepository tagRepository;
 
   @InjectMocks PoiServiceImpl poiServiceImpl;
 
@@ -94,6 +100,26 @@ public class PoiServiceImplTest {
             .latitude(Float.valueOf("1.4"))
             .longitude(Float.valueOf("1.5"));
     return new PoiGetReturnModel().ok(true).result(poiGetReturnModelResult);
+  }
+
+  private static Tag createTag() {
+    return new Tag(1L, TagsEnum.FOOD);
+  }
+
+  private static SearchNearestPoiModel createSearchNearestPoiModel() {
+    List<TagsEnum> tags = List.of(TagsEnum.FOOD, TagsEnum.PIZZA);
+    SearchNearestPoiModel searchNearestPoiModel =
+        new SearchNearestPoiModel()
+            .id(1L)
+            .externalId("1")
+            .name("name")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tags)
+            .description("desc")
+            .latitude(Float.valueOf("1.3"))
+            .longitude(Float.valueOf("1.3"))
+            .status(StatusEnum.VISIBLE);
+    return searchNearestPoiModel;
   }
 
   private static PoiPostReturnModel createPoiPostReturnModel() {
@@ -177,5 +203,38 @@ public class PoiServiceImplTest {
     assertThrows(NotFoundException.class, () -> poiServiceImpl.get(uuid, 1L));
     verify(customPoiRepository).findById(1L);
     verifyNoInteractions(entityConverterService);
+  }
+
+  @Test
+  void testSearchNearest() throws Exception {
+    Poi poi = createPoi();
+    List<Poi> pois = List.of(poi, poi);
+    Tag tag = createTag();
+    List<Tag> tags = List.of(tag, tag);
+    SearchNearestPoiModel searchNearestPoiModel = createSearchNearestPoiModel();
+    List<SearchNearestPoiModel> models = List.of(searchNearestPoiModel, searchNearestPoiModel);
+    when(customPoiRepository.searchNearest(1, Float.valueOf("1"), Float.valueOf("1"), 0, 50))
+        .thenReturn(pois);
+    when(tagRepository.findAllByPoiIn(pois)).thenReturn(tags);
+    when(entityConverterService.convertPoisToSearchModel(anySet())).thenReturn(models);
+    SearchNearestReturnModel returnmodel =
+        poiServiceImpl.searchNearest(uuid, 1, Float.valueOf("1"), Float.valueOf("1"), 0, 50);
+    assertEquals(returnmodel.isOk(), true);
+    assertEquals(returnmodel.getResult().getPage(), 0);
+    assertEquals(returnmodel.getResult().getData().get(0).getId(), 1L);
+    verify(customPoiRepository).searchNearest(1, Float.valueOf("1"), Float.valueOf("1"), 0, 50);
+    verify(tagRepository).findAllByPoiIn(pois);
+    verify(entityConverterService).convertPoisToSearchModel(anySet());
+  }
+
+  @Test
+  void testSearchNearest_badRequest() throws Exception {
+    when(customPoiRepository.searchNearest(1, Float.valueOf("1"), Float.valueOf("1"), 0, 50))
+        .thenThrow(new BadRequestException("bad request"));
+    assertThrows(
+        BadRequestException.class,
+        () -> poiServiceImpl.searchNearest(uuid, 1, Float.valueOf("1"), Float.valueOf("1"), 0, 50));
+    verify(customPoiRepository).searchNearest(1, Float.valueOf("1"), Float.valueOf("1"), 0, 50);
+    verifyNoInteractions(tagRepository, entityConverterService);
   }
 }

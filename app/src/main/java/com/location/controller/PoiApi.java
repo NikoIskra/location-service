@@ -7,6 +7,7 @@ package com.location.controller;
 import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
+import com.location.model.SearchNearestReturnModel;
 import jakarta.annotation.Generated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -35,6 +36,31 @@ public interface PoiApi {
   ResponseEntity<PoiPostReturnModel> addPoi(
       @NotNull @RequestHeader(value = "X-ACCOUNT-ID", required = true) UUID X_ACCOUNT_ID,
       @Valid @RequestBody PoiPostRequestModel poiPostRequestModel)
+      throws Exception;
+
+  /**
+   * GET /api/v1/poi/distance/{meters} get nearest Pois
+   *
+   * @param X_ACCOUNT_ID (required)
+   * @param meters (required)
+   * @param latitude (required)
+   * @param longitude (required)
+   * @param page (required)
+   * @param pageSize (optional)
+   * @return Retrieved (status code 200) or Bad request! (status code 400)
+   */
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "/api/v1/poi/distance/{meters}",
+      produces = {"application/json"})
+  ResponseEntity<SearchNearestReturnModel> getNearestPois(
+      @NotNull @RequestHeader(value = "X-ACCOUNT-ID", required = true) UUID X_ACCOUNT_ID,
+      @PathVariable("meters") Integer meters,
+      @NotNull @Valid @RequestParam(value = "latitude", required = true) Float latitude,
+      @NotNull @Valid @RequestParam(value = "longitude", required = true) Float longitude,
+      @NotNull @Valid @RequestParam(value = "page", required = true) Integer page,
+      @Min(20) @Max(100) @Valid @RequestParam(value = "page-size", required = false)
+          Integer pageSize)
       throws Exception;
 
   /**
