@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.location.config.Configuration;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
+import com.location.model.SearchNearestPoiModel;
 import com.location.model.StatusEnum;
 import com.location.model.TagsEnum;
 import com.location.model.TypeEnum;
@@ -12,6 +13,7 @@ import com.location.persistence.entity.Poi;
 import com.location.persistence.entity.Tag;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 public class EntityConverterServiceTest {
@@ -79,5 +81,23 @@ public class EntityConverterServiceTest {
     assertEquals(poi.getLatitude(), poiPostReturnModel.getResult().getLatitude());
     assertEquals(poi.getLongitude(), poiPostReturnModel.getResult().getLongitude());
     assertEquals(poi.getStatus(), poiPostReturnModel.getResult().getStatus());
+  }
+
+  @Test
+  void testConvertPoisToSearchModel() {
+    Poi poi = createPoi();
+    Set<Poi> pois = Set.of(poi);
+    List<SearchNearestPoiModel> listSearch = entityConverterService.convertPoisToSearchModel(pois);
+    SearchNearestPoiModel model = listSearch.get(0);
+    assertEquals(poi.getId(), model.getId());
+    assertEquals(poi.getExternalID(), model.getExternalId());
+    assertEquals(poi.getName(), model.getName());
+    assertEquals(poi.getType(), model.getType());
+    assertEquals(poi.getTags().get(0).getName(), model.getTags().get(0));
+    assertEquals(poi.getTags().get(1).getName(), model.getTags().get(1));
+    assertEquals(poi.getDescription(), model.getDescription());
+    assertEquals(poi.getLatitude(), model.getLatitude());
+    assertEquals(poi.getLongitude(), model.getLongitude());
+    assertEquals(poi.getStatus(), model.getStatus());
   }
 }

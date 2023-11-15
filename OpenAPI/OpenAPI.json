@@ -70,6 +70,43 @@
           }
         }
       }
+    },
+    "/api/v1/poi/distance/{meters}" : {
+      "get" : {
+        "operationId" : "getNearestPois",
+        "tags" : [
+          "poi"
+        ],
+        "description" : "get nearest Pois",
+        "parameters" : [
+          {
+            "$ref" : "common/params/headers/accountIDParam.json"
+          },
+          {
+            "$ref" : "common/params/pathParams/metersParam.json"
+          },
+          {
+            "$ref" : "common/params/queryParams/latitudeQueryParam.json"
+          },
+          {
+            "$ref" : "common/params/queryParams/longitudeQueryParam.json"
+          },
+          {
+            "$ref" : "common/params/queryParams/pageQueryParam.json"
+          },
+          {
+            "$ref" : "common/params/queryParams/pageSizeQueryParam.json"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "$ref": "APIspecs/responses/searchNearestOk.json"
+          },
+          "400" : {
+            "$ref": "APIspecs/responses/badRequest.json"
+          }
+        }
+      }
     }
   }
 }

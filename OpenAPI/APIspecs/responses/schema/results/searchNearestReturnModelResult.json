@@ -1,0 +1,32 @@
+{
+    "type" : "object",
+    "properties" : {
+        "data" : {
+            "type" : "array",
+            "items" : {
+                "$ref" : "models/searchNearestPoiModel.json"
+            }
+        },
+        "page" : {
+            "type" : "integer"
+        },
+        "pageSize" : {
+            "type" : "integer"
+        },
+        "latitude" : {
+            "type" : "number",
+            "format" : "float"
+        },
+        "longitude" : {
+            "type" : "number",
+            "format" : "float"
+        },
+        "distance" : {
+            "type" : "number",
+            "format" : "float"
+        },
+        "numberOfPages" : {
+            "type" : "integer"
+        }
+    }
+}
