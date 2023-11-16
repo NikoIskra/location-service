@@ -4,6 +4,7 @@ import com.location.exception.NotFoundException;
 import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
+import com.location.model.PoiPutRequestModel;
 import com.location.model.SearchNearestPoiModel;
 import com.location.model.SearchNearestReturnModel;
 import com.location.model.SearchNearestReturnModelResult;
@@ -15,12 +16,14 @@ import com.location.persistence.repository.TagRepository;
 import com.location.service.EntityConverterService;
 import com.location.service.PoiService;
 import com.location.service.PoiValidator;
+import jakarta.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.slf4j.SLF4JLogger;
 import org.slf4j.Logger;
@@ -42,6 +45,8 @@ public class PoiServiceImpl implements PoiService {
   private final CustomPoiJPARepository customPoiRepository;
 
   private final TagRepository tagRepository;
+
+  private final EntityManager entityManager;
 
   @Value("${page.size.default}")
   private Integer defaultPageSize;
@@ -94,5 +99,26 @@ public class PoiServiceImpl implements PoiService {
             .distance(Float.valueOf(meters))
             .numberOfPages((int) Math.ceil(poiModels.size() / pageSizeActual));
     return new SearchNearestReturnModel().ok(true).result(searchNearestReturnModelResult);
+  }
+
+  @Override
+  @Transactional
+  public PoiPostReturnModel update(
+      UUID X_ACCOUNT_ID, Long poiID, PoiPutRequestModel poiPutRequestModel) {
+    poiValidator.validatePoiPut(X_ACCOUNT_ID, poiID, poiPutRequestModel);
+    Poi poi = customPoiRepository.updatePoi(poiID, poiPutRequestModel);
+    List<Tag> tags =
+        poiPutRequestModel.getTags().stream()
+            .map(
+                tagEnum -> {
+                  Tag tag = new Tag(tagEnum, poi);
+                  return tag;
+                })
+            .collect(Collectors.toList());
+    tagRepository.deleteByPoiId(poiID);
+    entityManager.flush();
+    tagRepository.saveAll(tags);
+    poi.setTags(tags);
+    return entityConverterService.convertPoiToReturnModel(poi);
   }
 }

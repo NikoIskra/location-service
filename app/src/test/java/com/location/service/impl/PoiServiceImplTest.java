@@ -2,6 +2,7 @@ package com.location.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doThrow;
@@ -16,6 +17,7 @@ import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
+import com.location.model.PoiPutRequestModel;
 import com.location.model.SearchNearestPoiModel;
 import com.location.model.SearchNearestReturnModel;
 import com.location.model.StatusEnum;
@@ -27,6 +29,7 @@ import com.location.persistence.repository.CustomPoiJPARepository;
 import com.location.persistence.repository.TagRepository;
 import com.location.service.EntityConverterService;
 import com.location.service.PoiValidator;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +50,8 @@ public class PoiServiceImplTest {
   @Mock CustomPoiJPARepository customPoiRepository;
 
   @Mock TagRepository tagRepository;
+
+  @Mock EntityManager entityManager;
 
   @InjectMocks PoiServiceImpl poiServiceImpl;
 
@@ -123,6 +128,40 @@ public class PoiServiceImplTest {
   }
 
   private static PoiPostReturnModel createPoiPostReturnModel() {
+    List<TagsEnum> tagsEnums = new ArrayList<>();
+    tagsEnums.add(TagsEnum.CHINA_FOOD);
+    tagsEnums.add(TagsEnum.FOOD);
+    PoiPostReturnModelResult poiPostReturnModelResult =
+        new PoiPostReturnModelResult()
+            .id(1L)
+            .externalId("1")
+            .name("name1")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tagsEnums)
+            .description("desc")
+            .latitude(Float.valueOf("1.4"))
+            .longitude(Float.valueOf("1.5"))
+            .status(StatusEnum.VISIBLE);
+    return new PoiPostReturnModel().ok(true).result(poiPostReturnModelResult);
+  }
+
+  private static PoiPutRequestModel createPoiPutRequestModel() {
+    List<TagsEnum> tagsEnums = new ArrayList<>();
+    tagsEnums.add(TagsEnum.CHINA_FOOD);
+    tagsEnums.add(TagsEnum.FOOD);
+    PoiPutRequestModel poiPutRequestModel =
+        new PoiPutRequestModel()
+            .name("name1")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tagsEnums)
+            .description("desc")
+            .status(StatusEnum.VISIBLE)
+            .latitude(Float.valueOf("1.4"))
+            .longitude(Float.valueOf("1.5"));
+    return poiPutRequestModel;
+  }
+
+  private static PoiPostReturnModel createUpdatedPoiPostReturnModel() {
     List<TagsEnum> tagsEnums = new ArrayList<>();
     tagsEnums.add(TagsEnum.CHINA_FOOD);
     tagsEnums.add(TagsEnum.FOOD);
@@ -236,5 +275,42 @@ public class PoiServiceImplTest {
         () -> poiServiceImpl.searchNearest(uuid, 1, Float.valueOf("1"), Float.valueOf("1"), 0, 50));
     verify(customPoiRepository).searchNearest(1, Float.valueOf("1"), Float.valueOf("1"), 0, 50);
     verifyNoInteractions(tagRepository, entityConverterService);
+  }
+
+  @Test
+  void testUpdatePoi() throws Exception {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    Poi poi = createPoi();
+    PoiPostReturnModel poiPostReturnModel = createUpdatedPoiPostReturnModel();
+    when(customPoiRepository.updatePoi(1L, poiPutRequestModel)).thenReturn(poi);
+    when(entityConverterService.convertPoiToReturnModel(poi)).thenReturn(poiPostReturnModel);
+    PoiPostReturnModel poiPostReturnModel2 = poiServiceImpl.update(uuid, 1L, poiPutRequestModel);
+    verify(customPoiRepository).updatePoi(1L, poiPutRequestModel);
+    verify(poiValidator).validatePoiPut(uuid, 1L, poiPutRequestModel);
+    verify(tagRepository).deleteByPoiId(1L);
+    verify(tagRepository).saveAll(anyList());
+    verify(entityManager).flush();
+    verify(entityConverterService).convertPoiToReturnModel(poi);
+    assertEquals(true, poiPostReturnModel2.isOk());
+    assertEquals(1L, poiPostReturnModel2.getResult().getId());
+    assertEquals(poiPutRequestModel.getName(), poiPostReturnModel2.getResult().getName());
+    assertEquals(poiPutRequestModel.getType(), poiPostReturnModel2.getResult().getType());
+    assertEquals(
+        poiPutRequestModel.getDescription(), poiPostReturnModel2.getResult().getDescription());
+    assertEquals(poiPutRequestModel.getLatitude(), poiPostReturnModel2.getResult().getLatitude());
+    assertEquals(poiPutRequestModel.getLongitude(), poiPostReturnModel2.getResult().getLongitude());
+    assertEquals(poiPutRequestModel.getStatus(), poiPostReturnModel2.getResult().getStatus());
+  }
+
+  @Test
+  void testUpdatePoi_badRequest() throws Exception {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    doThrow(BadRequestException.class)
+        .when(poiValidator)
+        .validatePoiPut(uuid, 1L, poiPutRequestModel);
+    assertThrows(
+        BadRequestException.class, () -> poiServiceImpl.update(uuid, 1L, poiPutRequestModel));
+    verify(poiValidator).validatePoiPut(uuid, 1L, poiPutRequestModel);
+    verifyNoInteractions(tagRepository, entityManager, entityConverterService, customPoiRepository);
   }
 }

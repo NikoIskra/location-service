@@ -7,6 +7,7 @@ package com.location.controller;
 import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
+import com.location.model.PoiPutRequestModel;
 import com.location.model.SearchNearestReturnModel;
 import jakarta.annotation.Generated;
 import jakarta.validation.Valid;
@@ -77,5 +78,25 @@ public interface PoiApi {
   ResponseEntity<PoiGetReturnModel> getPoi(
       @NotNull @RequestHeader(value = "X-ACCOUNT-ID", required = true) UUID X_ACCOUNT_ID,
       @PathVariable("poi-id") Long poiId)
+      throws Exception;
+
+  /**
+   * PUT /api/v1/poi/{poi-id} update Poi
+   *
+   * @param X_ACCOUNT_ID (required)
+   * @param poiId (required)
+   * @param poiPutRequestModel Poi to be updated (required)
+   * @return updated (status code 200) or Bad request! (status code 400) or Not found! (status code
+   *     404)
+   */
+  @RequestMapping(
+      method = RequestMethod.PUT,
+      value = "/api/v1/poi/{poi-id}",
+      produces = {"application/json"},
+      consumes = {"application/json"})
+  ResponseEntity<PoiPostReturnModel> updatePoi(
+      @NotNull @RequestHeader(value = "X-ACCOUNT-ID", required = true) UUID X_ACCOUNT_ID,
+      @PathVariable("poi-id") Long poiId,
+      @Valid @RequestBody PoiPutRequestModel poiPutRequestModel)
       throws Exception;
 }

@@ -1,0 +1,14 @@
+{
+    "description": "Poi to be updated",
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "$ref": "schema/poiPutRequestModel.json"
+        },
+        "example" : {
+          "$ref" : "example/poiPutRequestBodyExample.json"
+        }
+      }
+    }
+}

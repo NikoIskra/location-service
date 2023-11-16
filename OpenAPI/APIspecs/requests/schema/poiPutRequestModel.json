@@ -1,0 +1,40 @@
+{
+    "type" : "object",
+    "required" : [
+        "name",
+        "type",
+        "status",
+        "lat",
+        "long"
+    ],
+    "properties" : {
+        "name" : {
+            "type" : "string",
+            "minLength" : 5,
+            "maxLength" : 64
+        },
+        "type" : {
+            "$ref" : "../../../common/enums/typeEnum.json"
+        },
+        "tags" : {
+            "type" : "array",
+            "items" : {
+                "$ref" : "../../../common/enums/tagsEnum.json"
+            }
+        },
+        "description" : {
+            "$ref" : "../../../common/props/description.json"
+        },
+        "status" : {
+            "$ref" : "../../../common/enums/statusEnum.json"
+        },
+        "latitude" : {
+            "type" : "number",
+            "format" : "float"
+        },
+        "longitude" : {
+            "type" : "number",
+            "format" : "float"
+        }
+    }
+}

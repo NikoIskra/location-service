@@ -69,6 +69,35 @@
             "$ref": "APIspecs/responses/notFound.json"
           }
         }
+      },
+      "put" : {
+        "operationId" : "updatePoi",
+        "tags" : [
+          "poi"
+        ],
+        "description" : "update Poi",
+        "parameters" : [
+          {
+            "$ref" : "common/params/headers/accountIDParam.json"
+          },
+          {
+            "$ref" : "common/params/pathParams/poiIDParam.json"
+          }
+        ],
+        "requestBody" : {
+          "$ref" : "APIspecs/requests/poiPutRequestBody.json"
+        },
+        "responses" : {
+          "200" : {
+            "$ref": "APIspecs/responses/poiUpdated.json"
+          },
+          "400": {
+            "$ref": "APIspecs/responses/badRequest.json"
+          },
+          "404" : {
+            "$ref": "APIspecs/responses/notFound.json"
+          }
+        }
       }
     },
     "/api/v1/poi/distance/{meters}" : {

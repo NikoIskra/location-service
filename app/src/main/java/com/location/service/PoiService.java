@@ -3,6 +3,7 @@ package com.location.service;
 import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
+import com.location.model.PoiPutRequestModel;
 import com.location.model.SearchNearestReturnModel;
 import java.util.UUID;
 
@@ -18,4 +19,6 @@ public interface PoiService {
       Float longitude,
       Integer page,
       Integer pageSize);
+
+  PoiPostReturnModel update(UUID X_ACCOUNT_ID, Long poiID, PoiPutRequestModel poiPutRequestModel);
 }
