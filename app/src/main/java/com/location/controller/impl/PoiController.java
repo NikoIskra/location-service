@@ -4,6 +4,7 @@ import com.location.controller.PoiApi;
 import com.location.model.PoiGetReturnModel;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
+import com.location.model.PoiPutRequestModel;
 import com.location.model.SearchNearestReturnModel;
 import com.location.service.PoiService;
 import jakarta.validation.Valid;
@@ -54,5 +55,14 @@ public class PoiController implements PoiApi {
     SearchNearestReturnModel searchNearestReturnModel =
         poiService.searchNearest(X_ACCOUNT_ID, meters, latitude, longitude, page, pageSize);
     return ResponseEntity.status(HttpStatus.OK).body(searchNearestReturnModel);
+  }
+
+  @Override
+  public ResponseEntity<PoiPostReturnModel> updatePoi(
+      @NotNull UUID X_ACCOUNT_ID, Long poiId, @Valid PoiPutRequestModel poiPutRequestModel)
+      throws Exception {
+    PoiPostReturnModel poiPostReturnModel =
+        poiService.update(X_ACCOUNT_ID, poiId, poiPutRequestModel);
+    return ResponseEntity.status(HttpStatus.OK).body(poiPostReturnModel);
   }
 }

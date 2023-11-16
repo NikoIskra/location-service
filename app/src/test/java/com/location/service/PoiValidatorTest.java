@@ -2,6 +2,7 @@ package com.location.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -9,7 +10,10 @@ import static org.mockito.Mockito.when;
 
 import com.location.exception.BadRequestException;
 import com.location.exception.ConflictException;
+import com.location.exception.NotFoundException;
 import com.location.model.PoiPostRequestModel;
+import com.location.model.PoiPutRequestModel;
+import com.location.model.StatusEnum;
 import com.location.model.TagsEnum;
 import com.location.model.TypeEnum;
 import com.location.persistence.repository.CustomPoiJPARepository;
@@ -46,6 +50,22 @@ public class PoiValidatorTest {
     return poiPostRequestModel;
   }
 
+  private static PoiPutRequestModel createPoiPutRequestModel() {
+    List<TagsEnum> tagsEnums = new ArrayList<>();
+    tagsEnums.add(TagsEnum.CHINA_FOOD);
+    tagsEnums.add(TagsEnum.FOOD);
+    PoiPutRequestModel poiPutRequestModel =
+        new PoiPutRequestModel()
+            .name("name1")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tagsEnums)
+            .description("desc")
+            .status(StatusEnum.VISIBLE)
+            .latitude(Float.valueOf("1.4"))
+            .longitude(Float.valueOf("1.5"));
+    return poiPutRequestModel;
+  }
+
   @Test
   void testValidatePoiPost() {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
@@ -75,5 +95,37 @@ public class PoiValidatorTest {
         ConflictException.class, () -> poiValidator.validatePoiPost(uuid, poiPostRequestModel));
     verify(accountApiClient).verifyAccountID(uuid);
     verify(poiRepository).existsByExternalIDAndName(anyString(), anyString());
+  }
+
+  @Test
+  void testValidatePoiPut() {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    when(poiRepository.existsById(anyLong())).thenReturn(true);
+    assertDoesNotThrow(() -> poiValidator.validatePoiPut(uuid, 1L, poiPutRequestModel));
+    verify(accountApiClient).verifyAccountID(uuid);
+    verify(poiRepository).existsById(anyLong());
+  }
+
+  @Test
+  void testValidatePoiPut_noRecord() {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    when(poiRepository.existsById(anyLong())).thenReturn(false);
+    assertThrows(
+        NotFoundException.class, () -> poiValidator.validatePoiPut(uuid, 1L, poiPutRequestModel));
+    verify(accountApiClient).verifyAccountID(uuid);
+    verify(poiRepository).existsById(anyLong());
+  }
+
+  @Test
+  void testValidatePoiPut_duplicateTags() {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    List<TagsEnum> tagsEnums = poiPutRequestModel.getTags();
+    tagsEnums.add(TagsEnum.FOOD);
+    poiPutRequestModel.setTags(tagsEnums);
+    when(poiRepository.existsById(anyLong())).thenReturn(true);
+    assertThrows(
+        BadRequestException.class, () -> poiValidator.validatePoiPut(uuid, 1L, poiPutRequestModel));
+    verify(accountApiClient).verifyAccountID(uuid);
+    verify(poiRepository).existsById(anyLong());
   }
 }

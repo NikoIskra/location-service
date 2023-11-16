@@ -9,6 +9,7 @@ import com.location.model.PoiGetReturnModelResult;
 import com.location.model.PoiPostRequestModel;
 import com.location.model.PoiPostReturnModel;
 import com.location.model.PoiPostReturnModelResult;
+import com.location.model.PoiPutRequestModel;
 import com.location.model.SearchNearestPoiModel;
 import com.location.model.SearchNearestReturnModel;
 import com.location.model.SearchNearestReturnModelResult;
@@ -118,6 +119,22 @@ public class PoiControllerTest {
     return new SearchNearestReturnModel().ok(true).result(result);
   }
 
+  private static PoiPutRequestModel createPoiPutRequestModel() {
+    List<TagsEnum> tagsEnums = new ArrayList<>();
+    tagsEnums.add(TagsEnum.CHINA_FOOD);
+    tagsEnums.add(TagsEnum.FOOD);
+    PoiPutRequestModel poiPutRequestModel =
+        new PoiPutRequestModel()
+            .name("name1")
+            .type(TypeEnum.RESTAURANT)
+            .tags(tagsEnums)
+            .description("desc")
+            .status(StatusEnum.VISIBLE)
+            .latitude(Float.valueOf("1.4"))
+            .longitude(Float.valueOf("1.5"));
+    return poiPutRequestModel;
+  }
+
   @Test
   void testInsertPoi() throws Exception {
     PoiPostRequestModel poiPostRequestModel = createPoiPostRequestModel();
@@ -189,6 +206,36 @@ public class PoiControllerTest {
             MockMvcRequestBuilders.get(
                     "http://localhost:3001/api/v1/poi/distance/25000?latitude=1.3&longitude=1.3&page=0&page-size=50")
                 .header("X-ACCOUNT-ID", uuid.toString()))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(false))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessage").value("bad request"));
+  }
+
+  @Test
+  void testUpdatePoi() throws Exception {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    PoiPostReturnModel poiPostReturnModel = createPoiPostReturnModel();
+    when(poiServiceImpl.update(uuid, 1L, poiPutRequestModel)).thenReturn(poiPostReturnModel);
+    mvc.perform(
+            MockMvcRequestBuilders.put("/api/v1/poi/1")
+                .header("X-ACCOUNT-ID", uuid.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(poiPutRequestModel)))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(true))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.result.id").value(1));
+  }
+
+  @Test
+  void testUpdatePoi_badRequest() throws Exception {
+    PoiPutRequestModel poiPutRequestModel = createPoiPutRequestModel();
+    when(poiServiceImpl.update(uuid, 1L, poiPutRequestModel))
+        .thenThrow(new BadRequestException("bad request"));
+    mvc.perform(
+            MockMvcRequestBuilders.put("/api/v1/poi/1")
+                .header("X-ACCOUNT-ID", uuid.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(poiPutRequestModel)))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
         .andExpect(MockMvcResultMatchers.jsonPath("$.ok").value(false))
         .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessage").value("bad request"));

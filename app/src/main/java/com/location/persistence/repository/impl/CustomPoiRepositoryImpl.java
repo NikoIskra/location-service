@@ -1,5 +1,6 @@
 package com.location.persistence.repository.impl;
 
+import com.location.model.PoiPutRequestModel;
 import com.location.persistence.entity.Poi;
 import com.location.persistence.entity.Tag;
 import com.location.persistence.repository.CustomPoiRepository;
@@ -34,6 +35,14 @@ public class CustomPoiRepositoryImpl implements CustomPoiRepository {
       """
     select p.id, p.external_id, p.name, p.type, p.description, p.latitude, p.longitude, p.status, p.created_at, p.updated_at, ST_DistanceSphere(p.location\\:::geometry, ST_MakePoint(:longitude, :latitude)) as distance
     from poi p WHERE ST_DWithin(p.location, ST_MakePoint(:longitude, :latitude), :meters) AND p.status = 'visible' ORDER BY distance ASC;
+      """;
+
+  private static final String poiUpdateQueryString =
+      """
+      UPDATE poi
+      SET name = :name, type = :type, description = :description, status = :status, latitude = :latitude, longitude = :longitude, location = ST_MakePoint(:longitude, :latitude)
+      WHERE id = :id
+      RETURNING *;
       """;
 
   @Override
@@ -75,5 +84,22 @@ public class CustomPoiRepositoryImpl implements CustomPoiRepository {
             .setMaxResults(pageSize);
     List<Poi> objects = searchNearestQuery.getResultList();
     return objects;
+  }
+
+  @Override
+  @Transactional
+  public Poi updatePoi(Long poiId, PoiPutRequestModel poiPutRequestModel) {
+    Query updatePoiQuery =
+        entityManager
+            .createNativeQuery(poiUpdateQueryString, Poi.class)
+            .setParameter("name", poiPutRequestModel.getName())
+            .setParameter("type", poiPutRequestModel.getType().toString())
+            .setParameter("status", poiPutRequestModel.getStatus().toString())
+            .setParameter("description", poiPutRequestModel.getDescription())
+            .setParameter("latitude", poiPutRequestModel.getLatitude())
+            .setParameter("longitude", poiPutRequestModel.getLongitude())
+            .setParameter("id", poiId);
+    Poi poi = (Poi) updatePoiQuery.getSingleResult();
+    return poi;
   }
 }

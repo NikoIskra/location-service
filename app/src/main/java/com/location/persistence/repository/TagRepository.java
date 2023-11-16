@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
   List<Tag> findAllByPoiIn(List<Poi> pois);
+
+  void deleteByPoiId(Long poiId);
 }
